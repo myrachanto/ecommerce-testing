@@ -8,6 +8,7 @@ import (
 	"github.com/myrachanto/ecommerce/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //productrepository ...
@@ -102,6 +103,30 @@ func (r *productrepository) GetAll(search string) ([]*model.Product, *httperrors
 			DbClose(c)
 			return products, nil
 		}
+
+}
+func (r *productrepository) GetThree() ([]*model.Product, *httperrors.HttpError) {
+	c, t := Mongoclient();if t != nil {
+		return nil, t
+	}
+	db, e := Mongodb();if e != nil {
+		return nil, e
+	}
+	collection := db.Collection("product")
+			products := []*model.Product{}
+			options := options.Find()
+
+		// Limit by 10 documents only 
+		options.SetLimit(3)
+		cursor, err := collection.Find(ctx, bson.M{}, options)
+		if err != nil {
+			return nil, httperrors.NewNotFoundError("No records found!") 
+		}
+		if err = cursor.All(ctx, &products); err != nil {
+			return nil, httperrors.NewNotFoundError("Error decoding!") 
+		}
+			DbClose(c)
+			return products, nil
 
 }
 

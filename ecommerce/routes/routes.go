@@ -45,8 +45,18 @@ func ApiMicroservice() {
 	// Routes
 	////////////////////////////////////////////////////////
 	/////////////users//////////////////////////////////
+
+	////////////////////////////////////////////////////////
+	/////////////front side//////////////////////////////////
+	e.GET("/blogi",  controllers.BlogController.GetAll)
+	e.GET("/blogi/:code",  controllers.BlogController.GetOne)
+	e.GET("/products",  controllers.ProductController.GetAll)
+	e.GET("/productlimit",  controllers.ProductController.GetThree)
+	e.GET("/product/:code",  controllers.ProductController.GetOne)
 	e.POST("/register", controllers.UserController.Create)
 	e.POST("/login", controllers.UserController.Login)
+	////////////////////////////////////////////////////////
+	/////////////users//////////////////////////////////
 	JWTgroup.GET("/logout", controllers.UserController.Logout)
 	JWTgroup.GET("/users", controllers.UserController.GetAll)
 	JWTgroup.GET("/users/:code", controllers.UserController.GetOne)

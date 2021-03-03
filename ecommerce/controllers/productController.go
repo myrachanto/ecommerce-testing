@@ -85,6 +85,13 @@ func (controller productController) GetAll(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, products)
 } 
+func (controller productController) GetThree(c echo.Context) error {
+	products, err3 := service.ProductService.GetThree()
+	if err3 != nil {
+		return c.JSON(err3.Code, err3)
+	}
+	return c.JSON(http.StatusOK, products)
+} 
 func (controller productController) GetOne(c echo.Context) error {
 	code := c.Param("code")
 	product, problem := service.ProductService.GetOne(code)
