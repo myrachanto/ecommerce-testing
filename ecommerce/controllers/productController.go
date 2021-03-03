@@ -10,6 +10,8 @@ import(
 	"github.com/myrachanto/ecommerce/httperrors"
 	"github.com/myrachanto/ecommerce/model"
 	"github.com/myrachanto/ecommerce/service"
+	"github.com/myrachanto/ecommerce/imagery"
+	///images manipulation
 )
  //ProductController ..
 var (
@@ -25,25 +27,6 @@ func (controller productController) Create(c echo.Context) error {
 	product.Title = c.FormValue("title")
 	product.Category = c.FormValue("category")
 	product.Majorcategory = c.FormValue("majorcategory")
-	b, err := strconv.ParseFloat(c.FormValue("oldprice"), 64)
-	if err != nil {
-		httperror := httperrors.NewBadRequestError("Invalid buying price")
-		return c.JSON(httperror.Code, httperror)
-	}
-	e, err2 := strconv.ParseFloat(c.FormValue("newprice"), 64)
-	if err2 != nil {
-		httperror := httperrors.NewBadRequestError("Invalid buying price")
-		return c.JSON(httperror.Code, httperror)
-	}
-	d, err4 := strconv.ParseFloat(c.FormValue("buyprice"), 64)
-	if err4 != nil {
-		httperror := httperrors.NewBadRequestError("Invalid buying price")
-		return c.JSON(httperror.Code, httperror)
-	}
-
-	product.Oldprice = b
-	product.Newprice = e
-	product.Buyprice = d
 
 	pic, err2 := c.FormFile("picture")
 			if pic != nil{
@@ -52,6 +35,9 @@ func (controller productController) Create(c echo.Context) error {
 				httperror := httperrors.NewBadRequestError("Invalid picture")
 				return c.JSON(httperror.Code, err2)
 			}	
+			//resize the image
+
+			//proceeed storing
 		src, err := pic.Open()
 		if err != nil {
 			httperror := httperrors.NewBadRequestError("the picture is corrupted")
@@ -59,6 +45,7 @@ func (controller productController) Create(c echo.Context) error {
 		}	
 		defer src.Close()
 		filePath := "./public/imgs/products/" + pic.Filename
+		filePath1 := "/imgs/products/" + pic.Filename
 		// Destination
 		dst, err4 := os.Create(filePath)
 		if err4 != nil {
@@ -72,9 +59,11 @@ func (controller productController) Create(c echo.Context) error {
 				httperror := httperrors.NewBadRequestError("error filling")
 				return c.JSON(httperror.Code, httperror)
 			}
-		} 
+		}
+		//resize the image and replace the old one
+		imagery.Imageryrepository.Imagetype(filePath, filePath)
 		
-		product.Picture = pic.Filename
+		product.Picture = filePath1
 		err1 := service.ProductService.Create(product)
 		if err1 != nil {
 		return c.JSON(err1.Code, err1)
@@ -112,25 +101,6 @@ func (controller productController) Update(c echo.Context) error {
 	product.Title = c.FormValue("title")
 	product.Category = c.FormValue("category")
 	product.Majorcategory = c.FormValue("majorcategory")
-	b, err := strconv.ParseFloat(c.FormValue("oldprice"), 64)
-	if err != nil {
-		httperror := httperrors.NewBadRequestError("Invalid buying price")
-		return c.JSON(httperror.Code, httperror)
-	}
-	e, err2 := strconv.ParseFloat(c.FormValue("newprice"), 64)
-	if err2 != nil {
-		httperror := httperrors.NewBadRequestError("Invalid buying price")
-		return c.JSON(httperror.Code, httperror)
-	}
-	d, err4 := strconv.ParseFloat(c.FormValue("buyprice"), 64)
-	if err4 != nil {
-		httperror := httperrors.NewBadRequestError("Invalid buying price")
-		return c.JSON(httperror.Code, httperror)
-	}
-
-	product.Oldprice = b
-	product.Newprice = e
-	product.Buyprice = d
 	code := c.Param("code")
 	// fmt.Println(pcode, "sssssssssssssssssssssssssssssssssss")
 	pic, err2 := c.FormFile("picture")
@@ -147,6 +117,7 @@ func (controller productController) Update(c echo.Context) error {
 		}	
 		defer src.Close()
 		filePath := "./public/imgs/products/" + pic.Filename
+		filePath1 := "/imgs/products/" + pic.Filename
 		// Destination
 		dst, err4 := os.Create(filePath)
 		if err4 != nil {
@@ -160,9 +131,11 @@ func (controller productController) Update(c echo.Context) error {
 				httperror := httperrors.NewBadRequestError("error filling")
 				return c.JSON(httperror.Code, httperror)
 			}
+		fmt.Println("llllllllllllllllllllllllllllll")
 		} 
-		
-		product.Picture = pic.Filename
+		//resize the image and replace the old one
+		imagery.Imageryrepository.Imagetype(filePath, filePath)
+		product.Picture = filePath1
 		fmt.Println(product)
 		fmt.Println(code, "----==============================")
 
@@ -185,10 +158,25 @@ func (controller productController) AUpdate(c echo.Context) error {
 		httperror := httperrors.NewBadRequestError("Invalid buying price")
 		return c.JSON(httperror.Code, httperror)
 	}
+	old, err1 := strconv.ParseFloat(c.FormValue("oldprice"), 64)
+	if err1 != nil {
+		httperror := httperrors.NewBadRequestError("Invalid buying price")
+		return c.JSON(httperror.Code, httperror)
+	}
+	new, err2 := strconv.ParseFloat(c.FormValue("newprice"), 64)
+	if err2 != nil {
+		httperror := httperrors.NewBadRequestError("Invalid buying price")
+		return c.JSON(httperror.Code, httperror)
+	}
+	buy, err3 := strconv.ParseFloat(c.FormValue("buyprice"), 64)
+	if err3 != nil {
+		httperror := httperrors.NewBadRequestError("Invalid buying price")
+		return c.JSON(httperror.Code, httperror)
+	}
 	
 	code := c.Param("code")
-	fmt.Println(code, b)
-	problem := service.ProductService.AUpdate(code,b)
+	fmt.Println(code, b,old,new,buy)
+	problem := service.ProductService.AUpdate(code,b, old, new,buy)
 	if problem != nil {
 		return c.JSON(problem.Code, problem)
 	}

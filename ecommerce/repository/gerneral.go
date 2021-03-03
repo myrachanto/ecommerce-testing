@@ -35,6 +35,10 @@ func (generalRepo generalrepo) View(search string)(*model.General, *httperrors.H
 	for _,s := range products {
 		productqty += s.Quantity
 	}
+	var stockvalue float64 = 0
+	for _,s := range products {
+		stockvalue += s.Quantity * s.Buyprice
+	}
 	general := model.General{}
 	general.Inventory.Total = productqty
 	general.Inventory.Name = "Inventory"
@@ -48,6 +52,9 @@ func (generalRepo generalrepo) View(search string)(*model.General, *httperrors.H
 	general.Blogs.Total = blogs
 	general.Blogs.Name = "Blogs"
 	general.Blogs.Description = "The  total number of blogs "
+	general.Stocks.Total = stockvalue
+	general.Stocks.Name = "Stocks"
+	general.Stocks.Description = "Stocks value in the system "
 
 	return &general, nil
 }

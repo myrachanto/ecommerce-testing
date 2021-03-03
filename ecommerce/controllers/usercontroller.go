@@ -9,6 +9,7 @@ import(
 	"github.com/myrachanto/ecommerce/httperrors"
 	"github.com/myrachanto/ecommerce/model"
 	"github.com/myrachanto/ecommerce/service"
+	"github.com/myrachanto/ecommerce/imagery"
 )
 //UserController ...
 var (
@@ -57,7 +58,10 @@ func (controller userController) Create(c echo.Context) error {
 					httperror := httperrors.NewBadRequestError("error filling")
 					return c.JSON(httperror.Code, httperror)
 				}
+
 			}
+			//resize the image and replace the old one
+			imagery.Imageryrepository.Imagetype(filePath, filePath)
 			
 		user.Picture = filePath1
 		err1 := service.UserService.Create(user)
@@ -157,6 +161,8 @@ func (controller userController) Update(c echo.Context) error {
 				}
 			}
 			
+				//resize the image and replace the old one
+				imagery.Imageryrepository.Imagetype(filePath, filePath)
 		user.Picture = filePath1
 		err1 := service.UserService.Update(code,user)
 		if err1 != nil {

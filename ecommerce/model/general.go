@@ -4,6 +4,7 @@ import(
 )
 //General ...
 type General struct {
+	Stocks    Module `json:"stocks,omitempty"`
 	Inventory Module `json:"inventory,omitempty"`
 	Orders    Module `json:"orders,omitempty"`
 	Products  Module `json:"products,omitempty"`

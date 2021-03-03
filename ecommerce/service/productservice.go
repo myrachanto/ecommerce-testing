@@ -32,8 +32,8 @@ func (service productService) Update(code string, product *model.Product) (*http
 	err1 := r.Productrepository.Update(code, product)
 	return err1
 }
-func (service productService) AUpdate(code string, b float64) (*httperrors.HttpError) {
-	err1 := r.Productrepository.AUpdate(code, b)
+func (service productService) AUpdate(code string, b, old, new,buy float64) (*httperrors.HttpError) {
+	err1 := r.Productrepository.AUpdate(code, b, old, new,buy)
 	return err1
 }
 func (service productService) Delete(id string) (*httperrors.HttpSuccess, *httperrors.HttpError) {

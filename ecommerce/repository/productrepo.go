@@ -163,7 +163,7 @@ func (r *productrepository) Update(code string, product *model.Product) (*httper
 }
 
 
-func (r *productrepository) AUpdate(code string, b float64) (*httperrors.HttpError) {
+func (r *productrepository) AUpdate(code string, b, old, new,buy float64) (*httperrors.HttpError) {
 	c, t := Mongoclient();if t != nil {
 		return t
 	}
@@ -176,6 +176,9 @@ func (r *productrepository) AUpdate(code string, b float64) (*httperrors.HttpErr
 	}
 	product := &model.Product{}
 	product.Quantity = b
+	product.Oldprice = old
+	product.Newprice = new
+	product.Buyprice = buy
 	fmt.Println(result)
 	if product.Name == ""{
 		product.Name = result.Name
