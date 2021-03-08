@@ -117,7 +117,7 @@ func (r *productrepository) GetThree() ([]*model.Product, *httperrors.HttpError)
 			options := options.Find()
 
 		// Limit by 10 documents only 
-		options.SetLimit(3)
+		options.SetLimit(4)
 		cursor, err := collection.Find(ctx, bson.M{}, options)
 		if err != nil {
 			return nil, httperrors.NewNotFoundError("No records found!") 

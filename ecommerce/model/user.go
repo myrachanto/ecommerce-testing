@@ -32,25 +32,25 @@ type User struct {
 	Base          `json:"base,omitempty"`
 }
 type UserIpAddress struct {
-	IpAddress string
-	Location Location
-	GadgetType string
+	IpAddress  string   `json:"ip_address,omitempty"`
+	Location   Location `json:"location,omitempty"`
+	GadgetType string   `json:"gadget_type,omitempty"`
 }
-type Verify struct{
-	Question string
-	Answer string
-	Hint string
-	Base
+type Verify struct {
+	Question string `json:"question,omitempty"`
+	Answer   string `json:"answer,omitempty"`
+	Hint     string `json:"hint,omitempty"`
+	Base     `json:"base,omitempty"`
 }
 type Auth struct {
 	//User User `gorm:"foreignKey:UserID; not null"`
-	UserID string   `json:"userid" bson:"userid"`
-	UName string `json:"uname"`
-	Token  string `bson:"token"`
-	Admin bool
-	Supervisor bool
-	Employee bool
-	Base
+	Code       string `json:"code,omitempty" bson:"code"`
+	UName      string `json:"uname,omitempty"`
+	Token      string `bson:"token" json:"token,omitempty"`
+	Admin      bool   `json:"admin,omitempty"`
+	Supervisor bool   `json:"supervisor,omitempty"`
+	Employee   bool   `json:"employee,omitempty"`
+	Base       `json:"base,omitempty"`
 }
 type LoginUser struct {
 	Email    string `bson:"email"`
@@ -59,14 +59,14 @@ type LoginUser struct {
 
 //Token struct declaration
 type Token struct {
-	UserID   string
-	UName string `json:"uname"`
-	Email  string
-	Admin bool
-	Supervisor bool
-	Employee bool
+	Code       string `json:"code,omitempty"`
+	UName      string `json:"uname,omitempty"`
+	Email      string `json:"email,omitempty"`
+	Admin      bool   `json:"admin,omitempty"`
+	Supervisor bool   `json:"supervisor,omitempty"`
+	Employee   bool   `json:"employee,omitempty"`
 	*jwt.StandardClaims
-	Base
+	Base `json:"base,omitempty"`
 }
 
 func (user User) ValidateEmail(email string) (matchedString bool) {

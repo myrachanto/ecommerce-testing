@@ -3,12 +3,15 @@ package routes
 import (
 	"log"
 	"os"
+	"strings"
+	"net/http"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/myrachanto/ecommerce/controllers"
+	jwt "github.com/dgrijalva/jwt-go"
 )
-// ApiMicroservice ...
+//ApiMicroservice ...
 func ApiMicroservice() {
 
 	err := godotenv.Load()
@@ -25,11 +28,17 @@ func ApiMicroservice() {
 	e.Use(middleware.CORS())
 
 	e.Static("/", "public")
+
 	JWTgroup := e.Group("/api")
 	JWTgroup.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS256",
 		SigningKey: []byte(key),
 	}))
+	//////////////////////////////////////////////////
+	///////////////////////////////////////////////////
+	// JWTgroup.Use(isAdmin)
+/////////////////////////////////////////////////////////
+/////////////////////////////////////////
 	// admin := e.Group("admin/")
 	// admin.Use(isAdmin)
 
@@ -174,12 +183,82 @@ func ApiMicroservice() {
 	JWTgroup.DELETE("/verify/:id", controllers.VerifyController.Delete)
 	////////////////////////////////////////////////////////
 	/////////////invoice//////////////////////////////////
-	e.POST("/invoice", controllers.InvoiceController.Create)
-	e.GET("/invoice", controllers.InvoiceController.GetAll)
-	e.GET("/invoice/:id", controllers.InvoiceController.GetOne)
+	// e.POST("/invoice", controllers.InvoiceController.Create)
+	// e.GET("/invoice", controllers.InvoiceController.GetAll)
+	// e.GET("/invoice/:id", controllers.InvoiceController.GetOne)
 	// e.PUT("/invoice/:id", controllers.InvoiceController.Update)
 	// e.DELETE("/invoice/:id", controllers.InvoiceController.Delete)
 
 	// Start server
 	e.Logger.Fatal(e.Start(PORT))
+}
+
+func isAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file in routes")
+	}
+	key := os.Getenv("EncryptionKey")
+	return func(c echo.Context) error {
+		headertoken := c.Request().Header.Get("x-auth-token")
+		token := strings.Split(headertoken, " ")[1]
+		claims := jwt.MapClaims{}
+		_, err := jwt.ParseWithClaims(token, claims, func(*jwt.Token)(interface{}, error){
+			return []byte(key), nil
+		})
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "unable to parse token")
+		}
+		isAdmin := claims["Admin"].(bool)
+		if isAdmin == false {
+			return echo.NewHTTPError(http.StatusForbidden, "unable to parse token")
+		}
+		return next(c)
+	}
+}
+func isSupervisor(next echo.HandlerFunc) echo.HandlerFunc {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file in routes")
+	}
+	key := os.Getenv("EncryptionKey")
+	return func(c echo.Context) error {
+		headertoken := c.Request().Header.Get("x-auth-token")
+		token := strings.Split(headertoken, " ")[1]
+		claims := jwt.MapClaims{}
+		_, err := jwt.ParseWithClaims(token, claims, func(*jwt.Token)(interface{}, error){
+			return []byte(key), nil
+		})
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "unable to parse token")
+		}
+		isAdmin := claims["Supervisor"].(bool)
+		if isAdmin == false {
+			return echo.NewHTTPError(http.StatusForbidden, "unable to parse token")
+		}
+		return next(c)
+	}
+}
+func isEmployee(next echo.HandlerFunc) echo.HandlerFunc {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file in routes")
+	}
+	key := os.Getenv("EncryptionKey")
+	return func(c echo.Context) error {
+		headertoken := c.Request().Header.Get("x-auth-token")
+		token := strings.Split(headertoken, " ")[1]
+		claims := jwt.MapClaims{}
+		_, err := jwt.ParseWithClaims(token, claims, func(*jwt.Token)(interface{}, error){
+			return []byte(key), nil
+		})
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "unable to parse token")
+		}
+		isAdmin := claims["Employee"].(bool)
+		if isAdmin == false {
+			return echo.NewHTTPError(http.StatusForbidden, "unable to parse token")
+		}
+		return next(c)
+	}
 }

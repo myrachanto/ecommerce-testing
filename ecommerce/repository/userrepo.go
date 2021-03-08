@@ -86,7 +86,7 @@ func (r *userrepository) Login(user *model.LoginUser) (*model.Auth, *httperrors.
 		return nil, httperrors.NewNotFoundError("wrong email password combo!")
 	}
 	tk := &model.Token{
-		UserID: auser.Code,
+		Code: auser.Code,
 		UName: auser.UName,
 		Admin: auser.Admin,
 		Supervisor:  auser.Supervisor,
@@ -107,7 +107,7 @@ func (r *userrepository) Login(user *model.LoginUser) (*model.Auth, *httperrors.
 	if error != nil {
 		fmt.Println(error)
 	}
-	auths := &model.Auth{Admin:auser.Admin, UName:auser.UName, Supervisor:auser.Supervisor,Employee:auser.Employee, Token:tokenString}
+	auths := &model.Auth{Code:auser.Code, Admin:auser.Admin, UName:auser.UName, Supervisor:auser.Supervisor,Employee:auser.Employee, Token:tokenString}
   // //  fmt.Println(auths)
 	// _, err3 := collection.InsertOne(ctx, auths)
 	// 	if err3 != nil {
