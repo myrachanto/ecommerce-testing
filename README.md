@@ -1,4 +1,3 @@
-# golang-ecommerce
 # golang-back-end-ecommerce-api
 # ecommerce web application back end with Golang and mongo db for database
 
