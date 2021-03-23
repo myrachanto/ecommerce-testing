@@ -9,6 +9,7 @@ require (
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/sunshineplan/imgconv v0.0.0-20210125125420-57ceefa2d8f4
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	go.mongodb.org/mongo-driver v1.4.6

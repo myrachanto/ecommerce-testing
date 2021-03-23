@@ -44,11 +44,11 @@ func (r *userrepository) Create(user *model.User) (*httperrors.HttpError) {
 	user.Code = code
 	
 	collection := db.Collection("user")
-	result := model.User{}
-	filter := bson.M{"email": user.Email}
-	errd := collection.FindOne(ctx, filter).Decode(&result)
-	if errd == nil {
-		return  httperrors.NewBadRequestError(fmt.Sprintf("Could not find resource with this id, %d", errd))
+	// result := model.User{}
+	// filter := bson.M{"email": user.Email}
+	ok = Userrepository.emailexist(user.Email)
+	if ok {
+		return httperrors.NewNotFoundError("that email exist in the our system!")
 	}
 	hashpassword, err2 := user.HashPassword(user.Password)
 	if err2 != nil {
@@ -417,14 +417,14 @@ func (r userrepository)Count()(float64, *httperrors.HttpError) {
 	db, e := Mongodb();if e != nil {
 		return 0, e
 	}
-	collection := db.Collection("product")
+	collection := db.Collection("user")
 	filter := bson.M{}
 	count, err := collection.CountDocuments(ctx, filter)
 	if err != nil { 
 		return 0,	httperrors.NewNotFoundError("no results found")
 	}
 	code := float64(count)
-
+    // fmt.Println(code)
 	DbClose(c)
 	return code, nil
 }

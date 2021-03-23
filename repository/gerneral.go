@@ -1,9 +1,12 @@
 package repository
 
 import (
-		"github.com/myrachanto/ecommerce/httperrors"
-		"github.com/myrachanto/ecommerce/model" 
+	"fmt"
+
+	"github.com/myrachanto/ecommerce/httperrors"
+	"github.com/myrachanto/ecommerce/model"
 )
+
 //Generalrepo repo
 var (
 	Generalrepo generalrepo = generalrepo{}
@@ -55,6 +58,7 @@ func (generalRepo generalrepo) View(search string)(*model.General, *httperrors.H
 	general.Stocks.Total = stockvalue
 	general.Stocks.Name = "Stocks"
 	general.Stocks.Description = "Stocks value in the system "
+	fmt.Println(general)
 
 	return &general, nil
 }

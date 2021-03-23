@@ -20,6 +20,7 @@ type Blog struct {
 }
 //Validate ...
 func (blog Blog) Validate() *httperrors.HttpError {
+	
 	if blog.Title == "" {
 		return httperrors.NewNotFoundError("Invalid title")
 	}

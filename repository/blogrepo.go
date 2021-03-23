@@ -11,6 +11,13 @@ import (
 var (
 	Blogrepository blogrepository = blogrepository{}
 )
+type BlogInterface interface{
+	Create(blog *model.Blog) (*httperrors.HttpError)
+	GetOne(code string) (*model.Blog, *httperrors.HttpError)
+	GetAll(search string) ([]*model.Blog, *httperrors.HttpError)
+	Update(code string, blog *model.Blog) (*httperrors.HttpError)
+	Delete(code string) (*httperrors.HttpSuccess, *httperrors.HttpError)
+}
 
 type blogrepository struct{}
 
@@ -173,7 +180,7 @@ func (r blogrepository)genecode()(string, *httperrors.HttpError) {
 	db, e := Mongodb();if e != nil {
 		return "", e
 	}
-	collection := db.Collection("category")
+	collection := db.Collection("blog")
 	filter := bson.M{}
 	count, err := collection.CountDocuments(ctx, filter)
 	co := count + 1
@@ -192,7 +199,7 @@ func (r blogrepository)Count()(float64, *httperrors.HttpError) {
 	db, e := Mongodb();if e != nil {
 		return 0, e
 	}
-	collection := db.Collection("product")
+	collection := db.Collection("blog")
 	filter := bson.M{}
 	count, err := collection.CountDocuments(ctx, filter)
 	if err != nil { 
